@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.845.0",
+    "serverless-webpack": "^5.3.5",
+    "webpack": "^5.22.0"
+  },
+  "name": "tag-backend",
+  "version": "1.0.0",
+  "license": "MIT"
+}
