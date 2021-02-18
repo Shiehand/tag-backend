@@ -3,22 +3,36 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 
 const Dynamo = {
-    async get(tagId, TableName) {
+    async get(Key, TableName) {
         const params = {
             TableName,
-            Key: {
-                tagId,
-            },
+            Key
         }
         console.log(params);
         
-        const data = await ddb.get(params).promise();
+        const res = await ddb.get(params).promise();
 
-        if (!data || !data.Item) {
+        if (!res || !res.Item) {
             throw Error(`There was an error fetching data for ID = ${ID} from ${TableName}`);
         }
+        return res.Item;
+    },
 
-        return data.Item;
+    async write(data, TableName) {
+        if (!data.ID) {
+            throw Error('ID not found');
+        };
+
+        const params = {
+            TableName,
+            Item: data
+        };
+
+        const res = await ddb.put(params).promise();
+
+        if (!res) {
+            throw Error(`There was an error putting data for ID = ${data.ID}`)
+        }
     }
 }
 

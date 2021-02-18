@@ -26,6 +26,8 @@ provider:
   lambdaHashingVersion: 20201221
   stage: dev
   region: us-west-1
+  environment:
+    tagTableName: Tag
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -75,10 +77,10 @@ functions:
           path: tags/
           method: GET
   getTags:
-    handler: lambdas/functions/getTags.handler
+    handler: lambdas/functions/getTag.handler
     events:
       - http:
-          path: get-tags/{ID}
+          path: get-tag/{ID}
           method: GET
 
 #    The following are a few example events you can configure
@@ -127,12 +129,12 @@ resources:
     tagsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: tagsTable
+        TableName: Tag
         AttributeDefinitions:
-          - AttributeName: tagId
+          - AttributeName: tag_id
             AttributeType: S
         KeySchema:
-          - AttributeName: tagId
+          - AttributeName: tag_id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 2

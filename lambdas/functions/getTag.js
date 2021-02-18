@@ -13,13 +13,20 @@ exports.handler = async (event) => {
 
     let ID = event.pathParameters.ID
 
-    const tag = await ddb.get(ID, 'tagsTable').catch(err => {
-        console.error('Error thrown by Dynamo get', err);
+    const params = {
+        tag_id: ID,
+    }
+
+    var errMessage = ''
+
+    const tag = await ddb.get(params, process.env.tagTableName).catch(err => {
+        errMessage = err;
+        console.error('Error thrown by Dynamo get:', err);
         return null;
     });
 
     if (!tag) {
-        return Responses._400({ message: 'Failed to get tag' });
+        return Responses._400({ message: errMessage });
     } else {
         return Responses._200({ tag });
     }
