@@ -13,7 +13,7 @@ const Dynamo = {
         const res = await ddb.get(params).promise();
 
         if (!res || !res.Item) {
-            throw Error(`There was an error fetching data for ID = ${ID} from ${TableName}`);
+            throw Error(`There was an error fetching data for PK: ${Key.PK} and SK: ${Key.SK} from ${TableName}`);
         }
         return res.Item;
     },
@@ -31,8 +31,10 @@ const Dynamo = {
         const res = await ddb.put(params).promise();
 
         if (!res) {
-            throw Error(`There was an error putting data for ID = ${data.ID}`)
+            throw Error(`There was an error putting data for PK: ${data.PK} and SK: ${data.SK} in table ${TableName}`)
         }
+
+        return data;
     }
 }
 

@@ -1,25 +1,27 @@
 'use strict'
 const AWS = require('aws-sdk');
 
-const Responses = require('../common/API_Responses')
-const ddb = require('../common/Dynamo')
+const Responses = require('../common/API_Responses');
+const Dynamo = require('../common/Dynamo');
 
-AWS.config.update({ region: "us-west-1" })
+AWS.config.update({ region: "us-west-1" });
 
 exports.handler = async (event) => {
-    if (!event.pathParameters || !event.pathParameters.ID) {
-        return Responses._400({ message: 'missing ID from path' })
+    if (!event.pathParameters || !event.pathParameters.username || !event.pathParameters.tagName) {
+        return Responses._400({ message: 'missing path parameters' });
     }
 
-    let ID = event.pathParameters.ID
+    let username = event.pathParameters.username;
+    let tagName = event.pathParameters.tagName;
 
     const params = {
-        tag_id: ID,
-    }
+        PK: username,
+        SK: tagName,
+    };
 
-    var errMessage = ''
+    const errMessage = '';
 
-    const tag = await ddb.get(params, process.env.tagTableName).catch(err => {
+    const tag = await Dynamo.get(params, process.env.userTagTable).catch(err => {
         errMessage = err;
         console.error('Error thrown by Dynamo get:', err);
         return null;
