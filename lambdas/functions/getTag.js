@@ -15,14 +15,15 @@ exports.handler = async (event) => {
     let tagName = event.pathParameters.tagName;
 
     const params = {
-        PK: username,
-        SK: tagName,
+        PK: `USER#${username}`,
+        SK: `PET#${tagName}`,
     };
 
-    const errMessage = '';
+    var errMessage = '';
 
     const tag = await Dynamo.get(params, process.env.userTagTable).catch(err => {
-        errMessage = err;
+        errMessage = err.message;
+        console.log("Error message:", errMessage);
         console.error('Error thrown by Dynamo get:', err);
         return null;
     });

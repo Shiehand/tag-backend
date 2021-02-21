@@ -3,7 +3,7 @@ const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 
 exports.handler = async (event) => {
-    if (!event.pathParameters || !event.pathParameters.username || !event.pathParameters.tagName) {
+    if (!event.pathParameters || !event.pathParameters.username) {
         return Responses._400({ message: 'missing path parameters' });
     }
 
@@ -13,9 +13,9 @@ exports.handler = async (event) => {
     if (!tag.SK) {
         return Responses._400({ message: 'No sort key found'});
     }
-    tag.PK = username;
+    tag.PK = `USER#${username}`;
 
-    const errMessage = '';
+    var errMessage = '';
 
     const newTag = await Dynamo.write(tag, process.env.userTagTable).catch(err => {
         errMessage = err;
