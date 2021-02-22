@@ -33,6 +33,7 @@ provider:
       Action:
         - dynamodb:*
       Resource: "*"
+
 plugins:
   - serverless-webpack
 
@@ -47,7 +48,7 @@ functions:
     handler: lambdas/functions/getTag.handler
     events:
       - http:
-          path: user/{username}/tag/{tagName}
+          path: user/{username}/tags/{tagName}
           method: GET
           cors: true
           # authorizer:
@@ -57,11 +58,12 @@ functions:
           #     Fn::GetAtt:
           #       - CognitoUserPool
           #       - Arn
+
   createTag:
     handler: lambdas/functions/createTag.handler
     events:
       - http:
-          path: users/{username}/tag
+          path: users/{username}/tags
           method: POST
           cors: true
           # authorizer:
@@ -71,6 +73,22 @@ functions:
           #     Fn::GetAtt:
           #       - CognitoUserPool
           #       - Arn
+
+  getUserTags:
+    handler: lambdas/functions/getUserTags.handler
+    events:
+      - http:
+          path: users/{username}/tags
+          method: GET
+          cors: true
+          # authorizer:
+          #   name: CognitoAuth
+          #   type: COGNITO_USER_POOLS
+          #   arn:
+          #     Fn::GetAtt:
+          #       - CognitoUserPool
+          #       - Arn
+
   createUser:
     handler: lambdas/functions/createUser.handler
     events:

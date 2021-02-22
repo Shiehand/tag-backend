@@ -1,10 +1,6 @@
 'use strict'
-const AWS = require('aws-sdk');
-
 const Responses = require('../common/API_Responses');
 const Dynamo = require('../common/Dynamo');
-
-AWS.config.update({ region: "us-west-1" });
 
 exports.handler = async (event) => {
     if (!event.pathParameters || !event.pathParameters.username || !event.pathParameters.tagName) {
@@ -23,7 +19,6 @@ exports.handler = async (event) => {
 
     const tag = await Dynamo.get(params, process.env.userTagTable).catch(err => {
         errMessage = err.message;
-        console.log("Error message:", errMessage);
         console.error('Error thrown by Dynamo get:', err);
         return null;
     });

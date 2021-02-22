@@ -1,8 +1,14 @@
 const AWS = require('aws-sdk');
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 const Dynamo = {
+    /*
+     * Function to get an item with Key from TableName
+     * Params:
+     *  Key: PK (or SK) of the item 
+     *  TableName: Name of the table the item is located
+     */
     async get(Key, TableName) {
         const params = {
             TableName,
@@ -37,6 +43,21 @@ const Dynamo = {
         }
 
         return data;
+    },
+
+    async query(params) {
+        if (!params.TableName) {
+            throw Error('No table name found');
+        }
+        
+        const res = await ddb.query(params).promise();
+
+        if (!res) {
+            console.log(res);
+            throw Error(`Error querying in table ${params.TableName}`)
+        }
+
+        return res;
     }
 }
 

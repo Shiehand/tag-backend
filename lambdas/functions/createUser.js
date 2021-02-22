@@ -21,7 +21,5 @@ exports.handler = (event, context, callback) => {
         return null;
     })
 
-    console.log("New user:", newUser);
-
     callback(null, event);
 }
