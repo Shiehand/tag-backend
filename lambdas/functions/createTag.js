@@ -9,6 +9,8 @@ exports.handler = async (event) => {
 
     let username = event.pathParameters.username;
 
+    console.log("Header:", event.headers);
+
     const tag = JSON.parse(event.body);
     if (!tag.SK) {
         return Responses._400({ message: 'No sort key found'});
@@ -26,6 +28,5 @@ exports.handler = async (event) => {
     if (!newTag) {
         return Responses._400({ message: errMessage });
     }
-
     return Responses._200({ newTag });
 }

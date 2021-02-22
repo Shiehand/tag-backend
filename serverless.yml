@@ -25,7 +25,7 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   stage: dev
-  region: us-west-1
+  region: us-west-2
   environment:
     userTagTable: ${self:custom.userTagTable}
   iamRoleStatements:
@@ -71,6 +71,13 @@ functions:
           #     Fn::GetAtt:
           #       - CognitoUserPool
           #       - Arn
+  createUser:
+    handler: lambdas/functions/createUser.handler
+    events:
+      - cognitoUserPool:
+          pool: ${self:provider.stage}-tag-user-pool
+          trigger: PostConfirmation
+          existing: true
 
 # you can add CloudFormation resource templates here
 resources:
@@ -93,27 +100,35 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 
-    CognitoUserPool:
+    TagUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
-        UserPoolName: ${self:provider.stage}-user-pool
+        UserPoolName: ${self:provider.stage}-tag-user-pool
         AutoVerifiedAttributes:
           - email
-        UsernameAttributes:
+        AliasAttributes:
           - email
         Schema:
-          - Name: name
+          - Name: given_name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+          - Name: family_name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+          - Name: email
             AttributeDataType: String
             Mutable: true
             Required: true
 
-    CognitoUserPoolClient:
+    TagUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
-        ClientName: ${self:provider.stage}-user-pool-client
+        ClientName: ${self:provider.stage}-tag-user-pool-client
         UserPoolId:
-          Ref: CognitoUserPool
+          Ref: TagUserPool
         GenerateSecret: false
         ExplicitAuthFlows:
-          - ALLOW_ADMIN_USER_PASSWORD_AUTH
+          - ALLOW_USER_SRP_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH
