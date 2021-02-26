@@ -1,0 +1,17 @@
+{
+  "env": {
+      "es6": true
+  },
+
+  "semi": [1, "always"],
+
+  "extends": [
+    "plugin:prettier/recommended"
+  ],
+
+  "plugins": ["prettier"],
+
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}

@@ -8,15 +8,20 @@ exports.handler = async (event) => {
 
     if (!event.pathParameters || !event.pathParameters.username) {
         return Responses._400({ message: 'missing path parameters' });
-    }
+    };
 
-    let username = event.pathParameters.username;
+    var username = event.pathParameters.username;
+    var petName = event.pathParameters.petName;
+    if (!event.pathParameters.petName) {
+        petName = '';
+    };
 
     const params = {
         ExpressionAttributeValues: {
             ':pk': `USER#${username}`,
+            ':sk': `PET#${petName}`,
         },
-        KeyConditionExpression: 'PK = :pk',
+        KeyConditionExpression: 'PK = :pk and begins_with(SK, :sk)',
         TableName: process.env.userTagTable,
     };
 
@@ -30,7 +35,7 @@ exports.handler = async (event) => {
 
     if (!result) {
         return Responses._400({ message: errMessage });
-    }
+    };
 
     return Responses._200({ result });
 }

@@ -44,11 +44,26 @@ custom:
   userTagTable: user-tag
 
 functions:
-  getTag:
-    handler: lambdas/functions/getTag.handler
+  getUserPet:
+    handler: lambdas/functions/getUserPet.handler
     events:
       - http:
-          path: user/{username}/tags/{tagName}
+          path: users/{username}/tags/{petName}
+          method: GET
+          cors: true
+          # authorizer:
+          #   name: CognitoAuth
+          #   type: COGNITO_USER_POOLS
+          #   arn:
+          #     Fn::GetAtt:
+          #       - CognitoUserPool
+          #       - Arn
+
+  getUserPetAll:
+    handler: lambdas/functions/getUserPet.handler
+    events:
+      - http:
+          path: users/{username}/tags/
           method: GET
           cors: true
           # authorizer:
@@ -65,21 +80,6 @@ functions:
       - http:
           path: users/{username}/tags
           method: POST
-          cors: true
-          # authorizer:
-          #   name: CognitoAuth
-          #   type: COGNITO_USER_POOLS
-          #   arn:
-          #     Fn::GetAtt:
-          #       - CognitoUserPool
-          #       - Arn
-
-  getUserTags:
-    handler: lambdas/functions/getUserTags.handler
-    events:
-      - http:
-          path: users/{username}/tags
-          method: GET
           cors: true
           # authorizer:
           #   name: CognitoAuth
