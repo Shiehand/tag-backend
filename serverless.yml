@@ -28,6 +28,7 @@ provider:
   region: us-west-2
   environment:
     userTagTable: ${self:custom.userTagTable}
+    sensorTable: ${self:custom.sensorTable}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -42,6 +43,7 @@ package:
 
 custom:
   userTagTable: user-tag
+  sensorTable: sensor-reading
 
 functions:
   getUserPet:
@@ -81,6 +83,31 @@ functions:
           path: users/{username}/tags
           method: POST
           cors: true
+          request:
+            parameters:
+              paths:
+                username: true
+          # authorizer:
+          #   name: CognitoAuth
+          #   type: COGNITO_USER_POOLS
+          #   arn:
+          #     Fn::GetAtt:
+          #       - CognitoUserPool
+          #       - Arn
+
+  getSensorData:
+    handler: lambdas/functions/getSensorData.handler
+    events:
+      - http:
+          path: tags/{tagId}/sensors
+          method: GET
+          cors: true
+          request:
+            parameters:
+              paths:
+                tagId: true
+              querystrings:
+                t: false
           # authorizer:
           #   name: CognitoAuth
           #   type: COGNITO_USER_POOLS
@@ -109,6 +136,24 @@ resources:
             AttributeType: S
           - AttributeName: SK
             AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    sensorReadingTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.sensorTable}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: N
         KeySchema:
           - AttributeName: PK
             KeyType: HASH

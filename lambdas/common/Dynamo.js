@@ -1,64 +1,71 @@
-const AWS = require('aws-sdk');
+/**
+ * Based on https://github.com/SamWSoftware/ServerlessYoutubeSeries/tree/l45-debugging
+ */
+const AWS = require("aws-sdk");
 
-const ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
+const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10" });
 
 const Dynamo = {
-    /*
-     * Function to get an item with Key from TableName
-     * Params:
-     *  Key: PK (or SK) of the item 
-     *  TableName: Name of the table the item is located
-     */
-    async get(Key, TableName) {
-        const params = {
-            TableName,
-            Key
-        }
-        console.log("Parameters:", params);
-        
-        const res = await ddb.get(params).promise();
+	/*
+	 * Function to get an item with Key from TableName
+	 * Params:
+	 *  Key: PK (or SK) of the item
+	 *  TableName: Name of the table the item is located
+	 */
+	async get(Key, TableName) {
+		const params = {
+			TableName,
+			Key,
+		};
+		console.log("Parameters:", params);
 
-        if (!res || !res.Item) {
-            console.log(res);
-            throw Error(`There was an error fetching data for PK: ${Key.PK} and SK: ${Key.SK} from ${TableName}`);
-        }
-        return res.Item;
-    },
+		const res = await ddb.get(params).promise();
 
-    async write(data, TableName) {
-        if (!data.PK || !data.SK) {
-            throw Error('Key not found');
-        };
+		if (!res || !res.Item) {
+			console.log(res);
+			throw Error(
+				`There was an error fetching data for PK: ${Key.PK} and SK: ${Key.SK} from ${TableName}`
+			);
+		}
+		return res.Item;
+	},
 
-        const params = {
-            TableName,
-            Item: data
-        };
+	async write(data, TableName) {
+		if (!data.PK || !data.SK) {
+			throw Error("Key not found");
+		}
 
-        const res = await ddb.put(params).promise();
+		const params = {
+			TableName,
+			Item: data,
+		};
 
-        if (!res) {
-            console.log(res);
-            throw Error(`There was an error putting data for PK: ${data.PK} and SK: ${data.SK} in table ${TableName}`)
-        }
+		const res = await ddb.put(params).promise();
 
-        return data;
-    },
+		if (!res) {
+			console.log(res);
+			throw Error(
+				`There was an error putting data for PK: ${data.PK} and SK: ${data.SK} in table ${TableName}`
+			);
+		}
 
-    async query(params) {
-        if (!params.TableName) {
-            throw Error('No table name found');
-        }
-        
-        const res = await ddb.query(params).promise();
+		return data;
+	},
 
-        if (!res) {
-            console.log(res);
-            throw Error(`Error querying in table ${params.TableName}`)
-        }
+	async query(params) {
+		if (!params.TableName) {
+			throw Error("No table name found");
+		}
 
-        return res;
-    }
-}
+		const res = await ddb.query(params).promise();
+
+		if (!res) {
+			console.log(res);
+			throw Error(`Error querying in table ${params.TableName}`);
+		}
+
+		return res;
+	},
+};
 
 module.exports = Dynamo;

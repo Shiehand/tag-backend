@@ -5,25 +5,32 @@ const Dynamo = require("../common/Dynamo");
 
 exports.handler = async (event) => {
 	console.log(event);
-
-	if (!event.pathParameters || !event.pathParameters.username) {
+	if (!event.pathParameters || !event.pathParameters.tagId) {
 		return Responses._400({ message: "missing path parameters" });
 	}
 
-	var username = event.pathParameters.username;
-	var petName = event.pathParameters.petName;
-	if (!event.pathParameters.petName) {
-		petName = "";
+	var tagId = event.pathParameters.tagId;
+	var duration;
+
+	if (!event.queryStringParameters.t) {
+		duration = 60 * 60;
+	} else {
+		let splitString = event.queryStringParameters.t.split(/(\d+)/);
+		const multiplier = splitString[2] == "m" ? 60 : 3600;
+		duration = parseInt(splitString[1]) * multiplier;
 	}
+
+	const endTime = Math.floor(Date.now() / 1000) - duration;
 
 	const params = {
 		ExpressionAttributeValues: {
-			":pk": `USER#${username}`,
-			":sk": `PET#${petName}`,
+			":tagId": tagId,
+			":endTime": endTime,
 		},
-		KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
-		TableName: process.env.userTagTable,
+		KeyConditionExpression: "PK = :tagId and SK >= :endTime",
+		TableName: process.env.sensorTable,
 	};
+	console.log(params);
 
 	var errMessage = "";
 
