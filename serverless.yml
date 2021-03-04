@@ -29,10 +29,12 @@ provider:
   environment:
     userTagTable: ${self:custom.userTagTable}
     sensorTable: ${self:custom.sensorTable}
+    region: us-west-2
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:*
+        - s3:*
       Resource: "*"
 
 plugins:
@@ -44,6 +46,7 @@ package:
 custom:
   userTagTable: user-tag
   sensorTable: sensor-reading
+  imageUploadBucket: tag-image-upload-bucket
 
 functions:
   getUserPet:
@@ -124,6 +127,14 @@ functions:
           trigger: PostConfirmation
           existing: true
 
+  petImageUpload:
+    handler: lambdas/functions/createUser.handler
+    events:
+      - http:
+          path: pet-img
+          method: POST
+          cors: true
+
 # you can add CloudFormation resource templates here
 resources:
   Resources:
@@ -195,3 +206,9 @@ resources:
         ExplicitAuthFlows:
           - ALLOW_USER_SRP_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH
+
+    ImageUploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.imageUploadBucket}
+        AccessControl: PublicRead

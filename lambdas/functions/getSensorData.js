@@ -9,14 +9,21 @@ exports.handler = async (event) => {
 		return Responses._400({ message: "missing path parameters" });
 	}
 
-	var tagId = event.pathParameters.tagId;
+	const tagId = event.pathParameters.tagId;
 	var duration;
 
-	if (!event.queryStringParameters.t) {
-		duration = 60 * 60;
+	if (!event.queryStringParameters) {
+		duration = 0;
 	} else {
 		let splitString = event.queryStringParameters.t.split(/(\d+)/);
-		const multiplier = splitString[2] == "m" ? 60 : 3600;
+		let multiplier;
+		if (splitString[2] === "m") {
+			multiplier = 60;
+		} else if (splitString[2] === "h") {
+			multiplier = 3600;
+		} else {
+			return Responses._400({ message: "Invalid query string parameter" });
+		}
 		duration = parseInt(splitString[1]) * multiplier;
 	}
 

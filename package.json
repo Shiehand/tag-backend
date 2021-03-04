@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "aws-sdk": "^2.845.0",
+    "file-type": "^16.2.0",
     "serverless-webpack": "^5.3.5",
+    "uuid": "^8.3.2",
     "webpack": "^5.22.0"
   },
   "name": "tag-backend",
