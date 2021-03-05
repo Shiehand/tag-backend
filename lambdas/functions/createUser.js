@@ -15,11 +15,10 @@ exports.handler = (event, context, callback) => {
 
 	var errMessage = "";
 
-	const newUser = Dynamo.write(params, process.env.userTagTable).catch(
+	await Dynamo.write(params, process.env.userTagTable).catch(
 		(err) => {
 			errMessage = err;
 			console.error("Error thrown by Dynamo put:", err);
-			return null;
 		}
 	);
 

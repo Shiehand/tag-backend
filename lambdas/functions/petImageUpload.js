@@ -2,10 +2,11 @@
 
 import { S3 } from "aws-sdk";
 import { v4 as uuid } from "uuid";
+import * as fileType from "file-type";
 import Responses from "../common/API_Responses";
 
 exports.handler = async (event) => {
-	console.log(JSON.stringify(`Event: event`));
+	console.log(event);
 
 	const s3 = new S3();
 
@@ -39,6 +40,7 @@ exports.handler = async (event) => {
 					user: username,
 					petName: petName,
 				},
+				ACL: "public-read",
 			})
 			.promise();
 

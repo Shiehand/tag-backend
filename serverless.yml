@@ -30,6 +30,7 @@ provider:
     userTagTable: ${self:custom.userTagTable}
     sensorTable: ${self:custom.sensorTable}
     region: us-west-2
+    imageUploadBucket: ${self:custom.imageUploadBucket}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -128,7 +129,7 @@ functions:
           existing: true
 
   petImageUpload:
-    handler: lambdas/functions/createUser.handler
+    handler: lambdas/functions/petImageUpload.handler
     events:
       - http:
           path: pet-img
