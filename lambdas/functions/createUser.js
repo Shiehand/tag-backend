@@ -1,7 +1,7 @@
 "use strict";
-const Dynamo = require("../common/Dynamo");
+import Dynamo from "../common/Dynamo";
 
-exports.handler = (event, context, callback) => {
+export async function handler(event) {
 	console.log(event);
 	const req = event.request;
 
@@ -13,14 +13,11 @@ exports.handler = (event, context, callback) => {
 		Email: req.userAttributes.email,
 	};
 
-	var errMessage = "";
+	try {
+		await Dynamo.write(params, process.env.userTagTable);
+	} catch (err) {
+		console.error("Error thrown by Dynamo put:", err);
+	}
 
-	await Dynamo.write(params, process.env.userTagTable).catch(
-		(err) => {
-			errMessage = err;
-			console.error("Error thrown by Dynamo put:", err);
-		}
-	);
-
-	callback(null, event);
-};
+	return null;
+}

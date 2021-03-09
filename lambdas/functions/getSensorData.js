@@ -1,9 +1,9 @@
 "use strict";
 
-const Responses = require("../common/API_Responses");
-const Dynamo = require("../common/Dynamo");
+import Responses from "../common/API_Responses";
+import Dynamo from "../common/Dynamo";
 
-exports.handler = async (event) => {
+export async function handler(event) {
 	console.log(event);
 	if (!event.pathParameters || !event.pathParameters.tagId) {
 		return Responses._400({ message: "missing path parameters" });
@@ -13,7 +13,7 @@ exports.handler = async (event) => {
 	var duration;
 
 	if (!event.queryStringParameters) {
-		duration = 0;
+		duration = null;
 	} else {
 		let splitString = event.queryStringParameters.t.split(/(\d+)/);
 		let multiplier;
@@ -27,8 +27,11 @@ exports.handler = async (event) => {
 		duration = parseInt(splitString[1]) * multiplier;
 	}
 
-	const endTime = Math.floor(Date.now() / 1000) - duration;
+	const endTime = 0;
 
+	if (duration) {
+		endTime = Math.floor(Date.now() / 1000) - duration;
+	}
 	const params = {
 		ExpressionAttributeValues: {
 			":tagId": tagId,
@@ -52,4 +55,4 @@ exports.handler = async (event) => {
 	}
 
 	return Responses._200({ result });
-};
+}

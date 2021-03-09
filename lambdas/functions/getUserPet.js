@@ -1,9 +1,9 @@
 "use strict";
 
-const Responses = require("../common/API_Responses");
-const Dynamo = require("../common/Dynamo");
+import Responses from "../common/API_Responses";
+import Dynamo from "../common/Dynamo";
 
-exports.handler = async (event) => {
+export async function handler(event) {
 	console.log(event);
 
 	if (!event.pathParameters || !event.pathParameters.username) {
@@ -38,4 +38,4 @@ exports.handler = async (event) => {
 	}
 
 	return Responses._200({ result });
-};
+}

@@ -1,8 +1,8 @@
 "use strict";
-const Responses = require("../common/API_Responses");
-const Dynamo = require("../common/Dynamo");
+import Responses from "../common/API_Responses";
+import Dynamo from "../common/Dynamo";
 
-exports.handler = async (event) => {
+export async function handler(event) {
 	if (!event.pathParameters || !event.pathParameters.username) {
 		return Responses._400({ message: "missing path parameters" });
 	}
@@ -33,4 +33,4 @@ exports.handler = async (event) => {
 		return Responses._400({ message: errMessage });
 	}
 	return Responses._200({ newTag });
-};
+}

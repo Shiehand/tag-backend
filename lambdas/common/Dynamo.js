@@ -1,9 +1,9 @@
 /**
  * Based on https://github.com/SamWSoftware/ServerlessYoutubeSeries/tree/l45-debugging
  */
-const AWS = require("aws-sdk");
+import { DynamoDB } from "aws-sdk";
 
-const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10" });
+const ddb = new DynamoDB.DocumentClient({ apiVersion: "2012-08-10" });
 
 const Dynamo = {
 	/*
@@ -31,10 +31,6 @@ const Dynamo = {
 	},
 
 	async write(data, TableName) {
-		if (!data.PK || !data.SK) {
-			throw Error("Key not found");
-		}
-
 		const params = {
 			TableName,
 			Item: data,
@@ -66,6 +62,24 @@ const Dynamo = {
 
 		return res;
 	},
+
+	async delete(key, tableName) {
+		const params = {
+			Key: {
+				...key,
+			},
+			TableName: tableName,
+		};
+
+		console.log(params);
+
+		try {
+			await ddb.delete(params).promise();
+		} catch (err) {
+			console.log(err);
+			throw Error(`Error deleting ${pk}`);
+		}
+	},
 };
 
-module.exports = Dynamo;
+export default Dynamo;

@@ -29,6 +29,7 @@ provider:
   environment:
     userTagTable: ${self:custom.userTagTable}
     sensorTable: ${self:custom.sensorTable}
+    socketTable: ${self:custom.socketTable}
     region: us-west-2
     imageUploadBucket: ${self:custom.imageUploadBucket}
   iamRoleStatements:
@@ -47,7 +48,10 @@ package:
 custom:
   userTagTable: user-tag
   sensorTable: sensor-reading
+  socketTable: websocket-connection
   imageUploadBucket: tag-image-upload-bucket
+  webpack:
+    packager: npm
 
 functions:
   getUserPet:
@@ -136,6 +140,27 @@ functions:
           method: POST
           cors: true
 
+  # Websocket functions
+  onConnect:
+    handler: lambdas/websockets/onConnect.handler
+    events:
+      - websocket:
+          route: $connect
+
+  onDisconnect:
+    handler: lambdas/websockets/onDisconnect.handler
+    events:
+      - websocket:
+          route: $disconnect
+
+  handleSensorUpdate:
+    handler: lambdas/websockets/handleSensorUpdate.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: [sensorReadingTable, StreamArn]
+
 # you can add CloudFormation resource templates here
 resources:
   Resources:
@@ -171,6 +196,22 @@ resources:
             KeyType: HASH
           - AttributeName: SK
             KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: KEYS_ONLY
+
+    SocketTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.socketTable}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
