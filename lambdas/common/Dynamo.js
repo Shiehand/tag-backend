@@ -35,7 +35,6 @@ const Dynamo = {
 			TableName,
 			Item: data,
 		};
-
 		const res = await ddb.put(params).promise();
 
 		if (!res) {

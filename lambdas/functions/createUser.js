@@ -19,5 +19,5 @@ export async function handler(event) {
 		console.error("Error thrown by Dynamo put:", err);
 	}
 
-	return null;
+	return event;
 }

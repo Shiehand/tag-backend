@@ -179,8 +179,8 @@ resources:
           - AttributeName: SK
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
 
     sensorReadingTable:
       Type: AWS::DynamoDB::Table
@@ -197,8 +197,8 @@ resources:
           - AttributeName: SK
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
         StreamSpecification:
           StreamViewType: KEYS_ONLY
 
@@ -207,14 +207,26 @@ resources:
       Properties:
         TableName: ${self:custom.socketTable}
         AttributeDefinitions:
-          - AttributeName: ID
+          - AttributeName: ConnectionId
+            AttributeType: S
+          - AttributeName: TagId
             AttributeType: S
         KeySchema:
-          - AttributeName: ID
+          - AttributeName: ConnectionId
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+        GlobalSecondaryIndexes:
+          - IndexName: TagIdIndex
+            KeySchema:
+              - AttributeName: TagId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 2
 
     TagUserPool:
       Type: AWS::Cognito::UserPool

@@ -22,7 +22,9 @@ export async function handler(event) {
 		} else if (splitString[2] === "h") {
 			multiplier = 3600;
 		} else {
-			return Responses._400({ message: "Invalid query string parameter" });
+			return Responses._400({
+				message: "Invalid query string parameter",
+			});
 		}
 		duration = parseInt(splitString[1]) * multiplier;
 	}

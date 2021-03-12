@@ -48,6 +48,8 @@ exports.handler = async (event) => {
 		return Responses._200({ imageUrl: url });
 	} catch (err) {
 		console.log("Error:", err);
-		return Responses._400({ message: err.message || "failed to upload image" });
+		return Responses._400({
+			message: err.message || "failed to upload image",
+		});
 	}
 };
