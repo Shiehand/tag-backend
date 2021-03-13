@@ -29,7 +29,7 @@ export async function handler(event) {
 		duration = parseInt(splitString[1]) * multiplier;
 	}
 
-	const endTime = 0;
+	var endTime = 0;
 
 	if (duration) {
 		endTime = Math.floor(Date.now() / 1000) - duration;
