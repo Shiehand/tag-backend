@@ -41,6 +41,7 @@ provider:
 
 plugins:
   - serverless-webpack
+  - serverless-offline
 
 package:
   individually: true

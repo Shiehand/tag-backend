@@ -34,7 +34,7 @@ exports.handler = async (event) => {
 					connection.Stage
 				);
 				const params = {
-					Data: Buffer.from(JSON.stringify(record.dynamodb)),
+					Data: "New sensor reading",
 					ConnectionId: connection.ConnectionId,
 				};
 				await websocket.postToConnection(params).promise();
