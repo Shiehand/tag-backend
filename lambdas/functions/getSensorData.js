@@ -17,6 +17,12 @@ export async function handler(event) {
 	} else {
 		let splitString = event.queryStringParameters.t.split(/(\d+)/);
 		let multiplier;
+		let num = parseInt(splitString[1]);
+		if (num === NaN) {
+			return Responses._400({
+				message: "Invalid query string parameter",
+			});
+		}
 		if (splitString[2] === "m") {
 			multiplier = 60;
 		} else if (splitString[2] === "h") {
@@ -26,7 +32,7 @@ export async function handler(event) {
 				message: "Invalid query string parameter",
 			});
 		}
-		duration = parseInt(splitString[1]) * multiplier;
+		duration = num * multiplier;
 	}
 
 	var endTime = 0;
