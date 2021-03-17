@@ -53,6 +53,7 @@ custom:
   imageUploadBucket: tag-image-upload-bucket
   webpack:
     packager: npm
+    includeModules: false
 
 functions:
   getUserPet:

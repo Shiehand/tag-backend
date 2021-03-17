@@ -19,6 +19,7 @@ export async function handler(event) {
 		(a, [k, v]) => (v == null ? a : ((a[k] = v), a)),
 		{}
 	);
+	console.log(cleanBody);
 
 	const params = {
 		PK: `USER#${username}`,
