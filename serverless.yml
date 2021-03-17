@@ -41,7 +41,7 @@ provider:
 
 plugins:
   - serverless-webpack
-  - serverless-offline
+  # - serverless-offline
 
 package:
   individually: true
@@ -208,12 +208,12 @@ resources:
       Properties:
         TableName: ${self:custom.socketTable}
         AttributeDefinitions:
-          - AttributeName: ConnectionId
+          - AttributeName: connectionId
             AttributeType: S
-          - AttributeName: TagId
+          - AttributeName: tagId
             AttributeType: S
         KeySchema:
-          - AttributeName: ConnectionId
+          - AttributeName: connectionId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 2
@@ -221,7 +221,7 @@ resources:
         GlobalSecondaryIndexes:
           - IndexName: TagIdIndex
             KeySchema:
-              - AttributeName: TagId
+              - AttributeName: tagId
                 KeyType: HASH
             Projection:
               ProjectionType: ALL

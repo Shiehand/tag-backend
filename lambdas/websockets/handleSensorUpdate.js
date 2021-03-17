@@ -18,7 +18,7 @@ exports.handler = async (event) => {
 		const params = {
 			TableName: process.env.socketTable,
 			IndexName: "TagIdIndex",
-			KeyConditionExpression: "TagId = :tagId",
+			KeyConditionExpression: "tagId = :tagId",
 			ExpressionAttributeValues: {
 				":tagId": tagId,
 			},

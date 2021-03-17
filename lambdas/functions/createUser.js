@@ -8,9 +8,9 @@ export async function handler(event) {
 	const params = {
 		PK: `USER#${event.userName}`,
 		SK: `USER#${event.userName}`,
-		FirstName: req.userAttributes.given_name,
-		LastName: req.userAttributes.family_name,
-		Email: req.userAttributes.email,
+		firstName: req.userAttributes.given_name,
+		lastName: req.userAttributes.family_name,
+		email: req.userAttributes.email,
 	};
 
 	try {

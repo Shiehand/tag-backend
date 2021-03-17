@@ -9,14 +9,21 @@ export async function handler(event) {
 
 	let username = event.pathParameters.username;
 
-	console.log("Header:", event.headers);
+	console.log("Event", JSON.stringify(event));
 
 	const body = JSON.parse(event.body);
+	if (!body.petName) {
+		return Responses._400("Missing petName");
+	}
+	const cleanBody = Object.entries(body).reduce(
+		(a, [k, v]) => (v == null ? a : ((a[k] = v), a)),
+		{}
+	);
 
 	const params = {
 		PK: `USER#${username}`,
 		SK: `PET#${body.petName}`,
-		PetName: body.petName,
+		...cleanBody,
 	};
 
 	var errMessage = "";
