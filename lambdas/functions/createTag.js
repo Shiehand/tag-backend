@@ -26,6 +26,7 @@ export async function handler(event) {
 		SK: `PET#${body.petName}`,
 		...cleanBody,
 	};
+	console.log("Params", params);
 
 	var errMessage = "";
 

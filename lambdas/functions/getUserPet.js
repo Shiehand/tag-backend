@@ -24,6 +24,7 @@ export async function handler(event) {
 		KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
 		TableName: process.env.userTagTable,
 	};
+	console.log("Params: ", params);
 
 	var errMessage = "";
 

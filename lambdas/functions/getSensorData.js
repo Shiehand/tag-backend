@@ -48,7 +48,7 @@ export async function handler(event) {
 		KeyConditionExpression: "PK = :tagId and SK >= :endTime",
 		TableName: process.env.sensorTable,
 	};
-	console.log(params);
+	console.log("Params: ", params);
 
 	var errMessage = "";
 

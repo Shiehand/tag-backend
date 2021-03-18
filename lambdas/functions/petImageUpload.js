@@ -12,6 +12,7 @@ exports.handler = async (event) => {
 
 	try {
 		const body = JSON.parse(event.body);
+		console.log("Body: ", body);
 		if (!body || !body.image || !body.username || !body.petName) {
 			return Responses._400({ message: "incorrect body on request" });
 		}

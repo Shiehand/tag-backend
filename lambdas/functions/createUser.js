@@ -12,6 +12,7 @@ export async function handler(event) {
 		lastName: req.userAttributes.family_name,
 		email: req.userAttributes.email,
 	};
+	console.log("Params: ", params);
 
 	try {
 		await Dynamo.write(params, process.env.userTagTable);
