@@ -7,7 +7,7 @@ exports.handler = async (event) => {
 
 	const { connectionId } = event.requestContext;
 	const key = {
-		ConnectionId: connectionId,
+		connectionId: connectionId,
 	};
 
 	try {

@@ -126,6 +126,18 @@ functions:
           #       - CognitoUserPool
           #       - Arn
 
+  createSensorData:
+    handler: lambdas/functions/createSensorData.handler
+    events:
+      - http:
+          path: tags/{tagId}/sensors
+          method: POST
+          cors: true
+          request:
+            parameters:
+              paths:
+                tagId: true
+
   createUser:
     handler: lambdas/functions/createUser.handler
     events:
@@ -189,14 +201,14 @@ resources:
       Properties:
         TableName: ${self:custom.sensorTable}
         AttributeDefinitions:
-          - AttributeName: PK
+          - AttributeName: tagId
             AttributeType: S
-          - AttributeName: SK
-            AttributeType: N
+          - AttributeName: readingId
+            AttributeType: S
         KeySchema:
-          - AttributeName: PK
+          - AttributeName: tagId
             KeyType: HASH
-          - AttributeName: SK
+          - AttributeName: readingId
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 2
@@ -229,6 +241,9 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 2
               WriteCapacityUnits: 2
+        TimeToLiveSpecification:
+          AttributeName: expDate
+          Enabled: true
 
     TagUserPool:
       Type: AWS::Cognito::UserPool

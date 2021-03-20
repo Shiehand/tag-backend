@@ -30,15 +30,15 @@ exports.handler = async (event) => {
 			for (var connection of connections.Items) {
 				console.log(connection);
 				let websocket = createSocket(
-					connection.DomainName,
-					connection.Stage
+					connection.domainName,
+					connection.stage
 				);
 				const params = {
 					Data: "New sensor reading",
-					ConnectionId: connection.ConnectionId,
+					ConnectionId: connection.connectionId,
 				};
 				await websocket.postToConnection(params).promise();
-				console.log("Post success at", connection.ConnectionId);
+				console.log("Post success at", connection.connectionId);
 			}
 		} catch (err) {
 			console.log(err);

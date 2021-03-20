@@ -13,11 +13,12 @@ exports.handler = async (event) => {
 	}
 
 	const data = {
-		ConnectionId: connectionId,
-		Date: Math.floor(Date.now() / 1000),
-		TagId: tagId,
-		DomainName: domainName,
-		Stage: stage,
+		connectionId: connectionId,
+		date: Math.floor(Date.now() / 1000),
+		tagId: tagId,
+		domainName: domainName,
+		stage: stage,
+		expDate: Math.floor(Date.now() / 1000) + 3600,
 	};
 
 	try {

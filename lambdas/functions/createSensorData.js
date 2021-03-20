@@ -8,8 +8,10 @@ export const handler = async (event) => {
 	const body = JSON.parse(event.body);
 	console.log(body);
 
-	if (!body.tagId || !body.date) {
-		return Responses._400({ message: "Missing tagId or date" });
+	const tagId = event.pathParameters.tagId;
+
+	if (!body.readingId) {
+		return Responses._400({ message: "Missing readingId" });
 	}
 
 	const filteredBody = Object.keys(body)
@@ -22,8 +24,7 @@ export const handler = async (event) => {
 		}, {});
 
 	const params = {
-		PK: body.tagId,
-		SK: body.date,
+		tagId: tagId,
 		...filteredBody,
 	};
 	console.log("Params: ", params);
