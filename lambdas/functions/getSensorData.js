@@ -45,7 +45,11 @@ export async function handler(event) {
 			":tagId": tagId,
 			":endTime": endTime,
 		},
-		KeyConditionExpression: "PK = :tagId and SK >= :endTime",
+		ExpressionAttributeNames: {
+			"#t": "time",
+		},
+		KeyConditionExpression: "tagId = :tagId",
+		FilterExpression: "#t >= :endTime",
 		TableName: process.env.sensorTable,
 	};
 	console.log("Params: ", params);
