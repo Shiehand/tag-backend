@@ -32,6 +32,7 @@ provider:
     socketTable: ${self:custom.socketTable}
     region: us-west-2
     imageUploadBucket: ${self:custom.imageUploadBucket}
+    behaviorModelBucket: ${self:custom.behaviorModelBucket}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -41,7 +42,6 @@ provider:
 
 plugins:
   - serverless-webpack
-  # - serverless-offline
 
 package:
   individually: true
@@ -51,6 +51,7 @@ custom:
   sensorTable: sensor-reading
   socketTable: websocket-connection
   imageUploadBucket: tag-image-upload-bucket
+  behaviorModelBucket: behavior-model-bucket
   webpack:
     packager: npm
     includeModules: false
@@ -283,3 +284,9 @@ resources:
       Properties:
         BucketName: ${self:custom.imageUploadBucket}
         AccessControl: PublicRead
+
+    BehaviorModelBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.behaviorModelBucket}
+        AccessControl: Private
