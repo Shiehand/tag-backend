@@ -42,7 +42,6 @@ provider:
 
 plugins:
   - serverless-webpack
-
 package:
   individually: true
 
@@ -206,6 +205,8 @@ resources:
             AttributeType: S
           - AttributeName: readingId
             AttributeType: S
+          - AttributeName: time
+            AttributeType: N
         KeySchema:
           - AttributeName: tagId
             KeyType: HASH
@@ -216,6 +217,15 @@ resources:
           WriteCapacityUnits: 2
         StreamSpecification:
           StreamViewType: KEYS_ONLY
+        LocalSecondaryIndexes:
+          - IndexName: DateLocalIndex
+            KeySchema:
+              - AttributeName: tagId
+                KeyType: HASH
+              - AttributeName: time
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
 
     SocketTable:
       Type: AWS::DynamoDB::Table
