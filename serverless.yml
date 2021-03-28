@@ -22,7 +22,6 @@ frameworkVersion: "2"
 
 provider:
   name: aws
-  runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   stage: dev
   region: us-west-2
@@ -42,8 +41,12 @@ provider:
 
 plugins:
   - serverless-webpack
+  - serverless-python-requirements
+
 package:
   individually: true
+  exclude:
+    - venv/**
 
 custom:
   userTagTable: user-tag
@@ -54,9 +57,14 @@ custom:
   webpack:
     packager: npm
     includeModules: false
+    excludeFiles: lambdas/**/*.py
+  pythonRequirements:
+    dockerizePip: non-linux
+    zip: true
 
 functions:
   getUserPet:
+    runtime: nodejs12.x
     handler: lambdas/functions/getUserPet.handler
     events:
       - http:
@@ -72,6 +80,7 @@ functions:
           #       - Arn
 
   getUserPetAll:
+    runtime: nodejs12.x
     handler: lambdas/functions/getUserPet.handler
     events:
       - http:
@@ -87,6 +96,7 @@ functions:
           #       - Arn
 
   createTag:
+    runtime: nodejs12.x
     handler: lambdas/functions/createTag.handler
     events:
       - http:
@@ -106,6 +116,7 @@ functions:
           #       - Arn
 
   getSensorData:
+    runtime: nodejs12.x
     handler: lambdas/functions/getSensorData.handler
     events:
       - http:
@@ -127,6 +138,7 @@ functions:
           #       - Arn
 
   createSensorData:
+    runtime: nodejs12.x
     handler: lambdas/functions/createSensorData.handler
     events:
       - http:
@@ -139,6 +151,7 @@ functions:
                 tagId: true
 
   createUser:
+    runtime: nodejs12.x
     handler: lambdas/functions/createUser.handler
     events:
       - cognitoUserPool:
@@ -147,6 +160,7 @@ functions:
           existing: true
 
   petImageUpload:
+    runtime: nodejs12.x
     handler: lambdas/functions/petImageUpload.handler
     events:
       - http:
@@ -154,20 +168,37 @@ functions:
           method: POST
           cors: true
 
+  predictActivity:
+    handler: lambdas/functions/predict_activity.handler
+    runtime: python3.8
+    package:
+      individually: false
+      exclude:
+        - node_modules/**
+        - "*.js"
+    events:
+      - http:
+          path: predict
+          method: POST
+          cors: true
+
   # Websocket functions
   onConnect:
+    runtime: nodejs12.x
     handler: lambdas/websockets/onConnect.handler
     events:
       - websocket:
           route: $connect
 
   onDisconnect:
+    runtime: nodejs12.x
     handler: lambdas/websockets/onDisconnect.handler
     events:
       - websocket:
           route: $disconnect
 
   handleSensorUpdate:
+    runtime: nodejs12.x
     handler: lambdas/websockets/handleSensorUpdate.handler
     events:
       - stream:
