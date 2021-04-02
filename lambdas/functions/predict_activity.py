@@ -25,7 +25,7 @@ def handler(event, context):
     )
     with open(temp_file_path, 'rb') as f:
         model = pickle.load(f)
-    prediction = model.predict(input)
+    prediction = model.predict(input)[0]
     print(prediction)
     return {
         "statusCode": 200,

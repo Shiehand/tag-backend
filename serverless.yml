@@ -87,13 +87,6 @@ functions:
           path: users/{username}/tags/
           method: GET
           cors: true
-          # authorizer:
-          #   name: CognitoAuth
-          #   type: COGNITO_USER_POOLS
-          #   arn:
-          #     Fn::GetAtt:
-          #       - CognitoUserPool
-          #       - Arn
 
   createTag:
     runtime: nodejs12.x
@@ -107,13 +100,19 @@ functions:
             parameters:
               paths:
                 username: true
-          # authorizer:
-          #   name: CognitoAuth
-          #   type: COGNITO_USER_POOLS
-          #   arn:
-          #     Fn::GetAtt:
-          #       - CognitoUserPool
-          #       - Arn
+
+  updateTag:
+    runtime: nodejs12.x
+    handler: lambdas/functions/updateTag.handler
+    events:
+      - http:
+          path: users/{username}/tags
+          method: PATCH
+          cors: true
+          request:
+            parameters:
+              paths:
+                username: true
 
   getSensorData:
     runtime: nodejs12.x
@@ -129,13 +128,6 @@ functions:
                 tagId: true
               querystrings:
                 t: false
-          # authorizer:
-          #   name: CognitoAuth
-          #   type: COGNITO_USER_POOLS
-          #   arn:
-          #     Fn::GetAtt:
-          #       - CognitoUserPool
-          #       - Arn
 
   createSensorData:
     runtime: nodejs12.x

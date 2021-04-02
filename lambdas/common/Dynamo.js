@@ -79,6 +79,48 @@ const Dynamo = {
 			throw Error(`Error deleting ${pk}`);
 		}
 	},
+
+	// Taken from https://stackoverflow.com/a/63511693
+	/**
+	 * Based on https://stackoverflow.com/a/63511693
+	 * Put null to sortKey if there is no sort key
+	 */
+	async update(tableName, item, partitionKey, sortKey) {
+		var params = {
+			TableName: tableName,
+			Key: {},
+			ExpressionAttributeValues: {},
+			ExpressionAttributeNames: {},
+			UpdateExpression: "",
+			ReturnValues: "UPDATED_NEW",
+		};
+
+		params["Key"][partitionKey] = item[partitionKey];
+		if (sortKey) {
+			params["Key"][sortKey] = item[sortKey];
+		}
+
+		let prefix = "set ";
+		let attributes = Object.keys(item);
+		for (let i = 0; i < attributes.length; i++) {
+			let attribute = attributes[i];
+			if (attribute != partitionKey && attribute != sortKey) {
+				params["UpdateExpression"] +=
+					prefix + "#" + attribute + " = :" + attribute;
+				params["ExpressionAttributeValues"][":" + attribute] =
+					item[attribute];
+				params["ExpressionAttributeNames"]["#" + attribute] = attribute;
+				prefix = ", ";
+			}
+		}
+		console.log(params);
+		try {
+			return await ddb.update(params).promise();
+		} catch (error) {
+			console.error(error);
+			throw Error(`Error updating ${partitionKey}`);
+		}
+	},
 };
 
 export default Dynamo;
