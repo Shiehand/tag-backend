@@ -10,13 +10,13 @@ export async function handler(event) {
 	console.log("Event", JSON.stringify(event));
 
 	const body = JSON.parse(event.body);
-	if (!body.petName) {
-		return Responses._400("Missing petName");
+	if (!body.tagId) {
+		return Responses._400("Missing tagId");
 	}
-	const petName = body.petName;
-	delete body.petName;
+	const tagId = body.tagId;
+	delete body.tagId;
 	body.PK = `USER#${username}`;
-	body.SK = `PET#${petName}`;
+	body.SK = `TAGID#${tagId}`;
 	console.log(body);
 	const res = await Dynamo.update(process.env.userTagTable, body, "PK", "SK");
 	return Responses._200({ message: res });

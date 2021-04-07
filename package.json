@@ -1,7 +1,7 @@
 {
   "dependencies": {
+    "axios": "^0.21.1",
     "file-type": "^16.2.0",
-    "node-fetch": "^2.6.1",
     "uuid": "^8.3.2"
   },
   "name": "tag-backend",
@@ -9,7 +9,6 @@
   "license": "MIT",
   "devDependencies": {
     "aws-sdk": "^2.868.0",
-    "axios": "^0.21.1",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",

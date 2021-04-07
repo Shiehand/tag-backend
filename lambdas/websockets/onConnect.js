@@ -6,16 +6,16 @@ exports.handler = async (event) => {
 	console.log("Event", event);
 
 	const { connectionId, domainName, stage } = event.requestContext;
-	const tagId = event.queryStringParameters.tagId;
+	const username = event.queryStringParameters.username;
 
-	if (!tagId) {
-		return Responses._400({ message: "No tagId found" });
+	if (!username) {
+		return Responses._400({ message: "No username found" });
 	}
 
 	const data = {
 		connectionId: connectionId,
 		date: Math.floor(Date.now() / 1000),
-		tagId: tagId,
+		username: username,
 		domainName: domainName,
 		stage: stage,
 		expDate: Math.floor(Date.now() / 1000) + 3600,

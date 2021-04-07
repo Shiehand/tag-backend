@@ -11,15 +11,15 @@ export async function handler(event) {
 	}
 
 	var username = event.pathParameters.username;
-	var petName = event.pathParameters.petName;
-	if (!event.pathParameters.petName) {
-		petName = "";
+	var tagId = event.pathParameters.tagId;
+	if (!event.pathParameters.tagId) {
+		tagId = "";
 	}
 
 	const params = {
 		ExpressionAttributeValues: {
 			":pk": `USER#${username}`,
-			":sk": `PET#${petName}`,
+			":sk": `TAGID#${tagId}`,
 		},
 		KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
 		TableName: process.env.userTagTable,

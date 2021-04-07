@@ -22,23 +22,34 @@ function randomDate(start, end, startHour, endHour) {
 	return date;
 }
 
-var activityArr = ["sleeping", "sitting", "walking", "running"];
+function randInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+var activityArr = ["sleeping", "sitting", "walking", "unusual"];
+const acc = 2 * 9.81;
 
 console.log(`Generating ${args[0]} entry`);
 for (let i = 0; i < args[0]; i++) {
 	let coord = randomLocation.randomCirclePoint(center, 500);
-	let heartRate = Math.floor(Math.random() * 10 + 90);
-	let temp = Math.floor(Math.random() * 30 + 20);
-	let activity = activityArr[Math.floor(Math.random() * 3)];
+	let heartRate = randInt(80, 100);
+	let temp = randInt(20, 50);
+	if (args[1] == 1) {
+		temp = 50;
+	}
 	let time = randomDate(new Date(2021, 3, 1), new Date(), 0, 23);
 	let body = {
 		latitude: coord.latitude,
 		longitude: coord.longitude,
 		temperature: temp,
 		heartRate,
-		activity,
 		readingId: uuid.v4(),
 		time: Math.floor(time.getTime() / 1000),
+		accel_x: 2 * (Math.random() - 0.5) * randInt(0, acc),
+		accel_y: 2 * (Math.random() - 0.5) * randInt(0, acc),
+		accel_z: 2 * (Math.random() - 0.5) * randInt(0, acc),
 	};
 	console.log("Body: ", body);
 

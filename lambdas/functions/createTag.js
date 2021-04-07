@@ -12,8 +12,8 @@ export async function handler(event) {
 	console.log("Event", JSON.stringify(event));
 
 	const body = JSON.parse(event.body);
-	if (!body.petName) {
-		return Responses._400("Missing petName");
+	if (!body.tagId) {
+		return Responses._400("Missing tagId");
 	}
 	const cleanBody = Object.entries(body).reduce(
 		(a, [k, v]) => (v == null ? a : ((a[k] = v), a)),
@@ -23,7 +23,7 @@ export async function handler(event) {
 
 	const params = {
 		PK: `USER#${username}`,
-		SK: `PET#${body.petName}`,
+		SK: `TAGID#${body.tagId}`,
 		...cleanBody,
 	};
 	console.log("Params", params);

@@ -29,6 +29,7 @@ provider:
     userTagTable: ${self:custom.userTagTable}
     sensorTable: ${self:custom.sensorTable}
     socketTable: ${self:custom.socketTable}
+    notificationTable: ${self:custom.notificationTable}
     region: us-west-2
     imageUploadBucket: ${self:custom.imageUploadBucket}
     behaviorModelBucket: ${self:custom.behaviorModelBucket}
@@ -52,6 +53,7 @@ custom:
   userTagTable: user-tag
   sensorTable: sensor-reading
   socketTable: websocket-connection
+  notificationTable: notification
   imageUploadBucket: tag-image-upload-bucket
   behaviorModelBucket: behavior-model-bucket
   webpack:
@@ -68,7 +70,7 @@ functions:
     handler: lambdas/functions/getUserPet.handler
     events:
       - http:
-          path: users/{username}/tags/{petName}
+          path: users/{username}/tags/{tagId}
           method: GET
           cors: true
           # authorizer:
@@ -132,6 +134,7 @@ functions:
   createSensorData:
     runtime: nodejs12.x
     handler: lambdas/functions/createSensorData.handler
+    timeout: 30
     events:
       - http:
           path: tags/{tagId}/sensors
@@ -142,6 +145,18 @@ functions:
               paths:
                 tagId: true
 
+  getNotification:
+    runtime: nodejs12.x
+    handler: lambdas/functions/getNotification.handler
+    events:
+      - http:
+          path: notifications/{username}
+          method: GET
+          cors: true
+          request:
+            parameters:
+              paths:
+                username: true
   createUser:
     runtime: nodejs12.x
     handler: lambdas/functions/createUser.handler
@@ -218,6 +233,16 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 2
           WriteCapacityUnits: 2
+        GlobalSecondaryIndexes:
+          - IndexName: ReverseLookupIndex
+            KeySchema:
+              - AttributeName: SK
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 2
 
     sensorReadingTable:
       Type: AWS::DynamoDB::Table
@@ -236,10 +261,10 @@ resources:
           - AttributeName: readingId
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 2
-          WriteCapacityUnits: 2
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
         StreamSpecification:
-          StreamViewType: KEYS_ONLY
+          StreamViewType: NEW_IMAGE
         LocalSecondaryIndexes:
           - IndexName: DateLocalIndex
             KeySchema:
@@ -257,7 +282,7 @@ resources:
         AttributeDefinitions:
           - AttributeName: connectionId
             AttributeType: S
-          - AttributeName: tagId
+          - AttributeName: username
             AttributeType: S
         KeySchema:
           - AttributeName: connectionId
@@ -266,9 +291,9 @@ resources:
           ReadCapacityUnits: 2
           WriteCapacityUnits: 2
         GlobalSecondaryIndexes:
-          - IndexName: TagIdIndex
+          - IndexName: UsernameIndex
             KeySchema:
-              - AttributeName: tagId
+              - AttributeName: username
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
@@ -278,6 +303,24 @@ resources:
         TimeToLiveSpecification:
           AttributeName: expDate
           Enabled: true
+
+    NotificationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.notificationTable}
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: time
+            AttributeType: N
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+          - AttributeName: time
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 4
+          WriteCapacityUnits: 4
 
     TagUserPool:
       Type: AWS::Cognito::UserPool

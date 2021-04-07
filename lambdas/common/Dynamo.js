@@ -44,7 +44,7 @@ const Dynamo = {
 			);
 		}
 
-		return data;
+		return res;
 	},
 
 	async query(params) {
