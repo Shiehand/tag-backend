@@ -15,8 +15,13 @@ export const handler = async (event) => {
 		return Responses._400({ message: "Missing readingId" });
 	}
 
+	if (!body.image) {
+		return Responses._400("missing image name");
+	}
+	const imageName = body.image;
+
 	const filteredBody = Object.keys(body)
-		.filter((key) => key != "tagId")
+		.filter((key) => key != "tagId" && key != "image")
 		.reduce((obj, key) => {
 			return {
 				...obj,
@@ -29,23 +34,23 @@ export const handler = async (event) => {
 		...filteredBody,
 	};
 
-	if (filteredBody.accel_x && filteredBody.accel_y && filteredBody.accel_z) {
-		const inputArr = [];
-		inputArr.push(
-			filteredBody.temperature,
-			filteredBody.accel_x,
-			filteredBody.accel_y,
-			filteredBody.accel_z
-		);
-		const activity = await axios.post(
-			"https://k7t0ap6b0i.execute-api.us-west-2.amazonaws.com/dev/predict",
-			{
-				input: inputArr,
-			}
-		);
-		console.log("Activity", activity.data);
-		params.activity = activity.data.prediction;
-	}
+	const inputArr = [];
+	inputArr.push(
+		filteredBody.temperature,
+		filteredBody.accel_x,
+		filteredBody.accel_y,
+		filteredBody.accel_z
+	);
+	const activity = await axios.post(
+		"https://hvuhuknme2.execute-api.us-west-2.amazonaws.com/default/predict-image-activity",
+		{
+			accel: inputArr,
+			image: imageName,
+		}
+	);
+	console.log("Activity", activity.data);
+	params.activity = activity.data.activity;
+	params.poach = activity.data.poach;
 	console.log("Params: ", params);
 
 	try {

@@ -50,6 +50,7 @@ for (let i = 0; i < args[0]; i++) {
 		accel_x: 2 * (Math.random() - 0.5) * randInt(0, acc),
 		accel_y: 2 * (Math.random() - 0.5) * randInt(0, acc),
 		accel_z: 2 * (Math.random() - 0.5) * randInt(0, acc),
+		image: "image0.jpg",
 	};
 	console.log("Body: ", body);
 

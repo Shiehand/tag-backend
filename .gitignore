@@ -3,3 +3,5 @@ node_modules
 .webpack
 venv/
 .requirements.zip
+lambda-layer
+tensor

@@ -1,6 +1,7 @@
 "use strict;";
 import { ApiGatewayManagementApi } from "aws-sdk";
 import Dynamo from "../common/Dynamo";
+const pointInPolygon = require("point-in-polygon");
 
 exports.handler = async (event) => {
 	const records = event.Records.filter(
@@ -26,10 +27,6 @@ exports.handler = async (event) => {
 		}
 		const username = userTag.Items[0].PK.slice(5);
 		const petName = userTag.Items[0].petName;
-		if (userTag.Items[0].geofence) {
-			geofence = userTag.Items[0].geofence;
-			console.log("Geofencing: ", geofence);
-		}
 
 		const param = {
 			TableName: process.env.socketTable,
@@ -64,6 +61,36 @@ exports.handler = async (event) => {
 				};
 				await websocket.postToConnection(params).promise();
 
+				// Geofencing notification
+				if (userTag.Items[0].geofence) {
+					const location = [];
+					location.push(newItem.latitude.N, newItem.longitude.N);
+					const geofence = userTag.Items[0].geofence;
+					console.log("Geofencing: ", geofence);
+					if (!pointInPolygon(location, geofence)) {
+						console.log("Geofencing triggered");
+						let payload = {
+							header: "Geofencing Triggered",
+							location: location,
+							time: Math.floor(Date.now() / 1000),
+							tagId: newItem.tagId.S,
+							petName: petName,
+							username: username,
+						};
+						Dynamo.write(payload, process.env.notificationTable)
+							.then((res) => console.log(res))
+							.catch((err) => console.error(err));
+						payload.type = "notification";
+						let notifyParams = {
+							Data: Buffer.from(JSON.stringify(payload)),
+							ConnectionId: connection.connectionId,
+						};
+						await websocket
+							.postToConnection(notifyParams)
+							.promise();
+					}
+				}
+
 				// Checking if there is anything to notify
 				if (newItem.temperature.N > 40) {
 					let payload = {
@@ -87,6 +114,25 @@ exports.handler = async (event) => {
 				if (newItem.activity.S === "unusual") {
 					let payload = {
 						header: "Unusual Activity",
+						time: Math.floor(Date.now() / 1000),
+						tagId: newItem.tagId.S,
+						petName: petName,
+						username: username,
+					};
+					Dynamo.write(payload, process.env.notificationTable)
+						.then((res) => console.log(res))
+						.catch((err) => console.error(err));
+					payload.type = "notification";
+					let notifyParams = {
+						Data: Buffer.from(JSON.stringify(payload)),
+						ConnectionId: connection.connectionId,
+					};
+					await websocket.postToConnection(notifyParams).promise();
+				}
+
+				if (newItem.poach.S === "true") {
+					let payload = {
+						header: "Poaching Alert",
 						time: Math.floor(Date.now() / 1000),
 						tagId: newItem.tagId.S,
 						petName: petName,
