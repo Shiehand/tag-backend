@@ -1,5 +1,5 @@
 /**
- * Taken from https://github.com/SamWSoftware/ServerlessYoutubeSeries/tree/l45-debugging
+ * Based from https://github.com/SamWSoftware/ServerlessYoutubeSeries/tree/l45-debugging
  */
 const Responses = {
 	_200(data = {}) {
@@ -27,4 +27,4 @@ const Responses = {
 	},
 };
 
-export default Responses;
+module.exports = Responses;

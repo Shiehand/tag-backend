@@ -3,7 +3,7 @@
 import { S3 } from "aws-sdk";
 import { v4 as uuid } from "uuid";
 import * as fileType from "file-type";
-import Responses from "../common/API_Responses";
+const Responses = require("../common/API_Responses");
 
 exports.handler = async (event) => {
 	console.log(event);

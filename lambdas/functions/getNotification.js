@@ -1,7 +1,7 @@
 "use strict;";
 
-import Responses from "../common/API_Responses";
-import Dynamo from "../common/Dynamo";
+const Responses = require("../common/API_Responses");
+const Dynamo = require("../common/Dynamo");
 
 exports.handler = async (event) => {
 	console.log("Event", event);

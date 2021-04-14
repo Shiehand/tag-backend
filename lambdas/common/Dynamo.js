@@ -1,9 +1,19 @@
 /**
  * Based on https://github.com/SamWSoftware/ServerlessYoutubeSeries/tree/l45-debugging
  */
-import { DynamoDB } from "aws-sdk";
+const AWS = require("aws-sdk");
 
-const ddb = new DynamoDB.DocumentClient({ apiVersion: "2012-08-10" });
+const isTest = process.env.JEST_WORKER_ID;
+const config = {
+	convertEmptyValues: true,
+	...(isTest && {
+		endpoint: "localhost:8000",
+		sslEnabled: false,
+		region: "local-env",
+	}),
+};
+
+const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const Dynamo = {
 	/*
@@ -17,14 +27,17 @@ const Dynamo = {
 			TableName,
 			Key,
 		};
-		console.log("Parameters:", params);
 
 		const res = await ddb.get(params).promise();
 
 		if (!res || !res.Item) {
 			console.log(res);
 			throw Error(
-				`There was an error fetching data for PK: ${Key.PK} and SK: ${Key.SK} from ${TableName}`
+				`There was an error fetching data for key: ${JSON.stringify(
+					Key,
+					null,
+					2
+				)} from ${TableName}`
 			);
 		}
 		return res.Item;
@@ -44,7 +57,7 @@ const Dynamo = {
 			);
 		}
 
-		return res;
+		return data;
 	},
 
 	async query(params) {
@@ -59,7 +72,7 @@ const Dynamo = {
 			throw Error(`Error querying in table ${params.TableName}`);
 		}
 
-		return res;
+		return res.Items;
 	},
 
 	async delete(key, tableName) {
@@ -69,8 +82,6 @@ const Dynamo = {
 			},
 			TableName: tableName,
 		};
-
-		console.log(params);
 
 		try {
 			await ddb.delete(params).promise();
@@ -85,7 +96,7 @@ const Dynamo = {
 	 * Based on https://stackoverflow.com/a/63511693
 	 * Put null to sortKey if there is no sort key
 	 */
-	async update(tableName, item, partitionKey, sortKey) {
+	async update(tableName, item, partitionKey, sortKey = null) {
 		var params = {
 			TableName: tableName,
 			Key: {},
@@ -113,9 +124,9 @@ const Dynamo = {
 				prefix = ", ";
 			}
 		}
-		console.log(params);
 		try {
-			return await ddb.update(params).promise();
+			const res = await ddb.update(params).promise();
+			return res.Attributes;
 		} catch (error) {
 			console.error(error);
 			throw Error(`Error updating ${partitionKey}`);
@@ -123,4 +134,4 @@ const Dynamo = {
 	},
 };
 
-export default Dynamo;
+module.exports = Dynamo;

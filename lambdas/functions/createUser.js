@@ -1,5 +1,5 @@
 "use strict";
-import Dynamo from "../common/Dynamo";
+const Dynamo = require("../common/Dynamo");
 
 export async function handler(event) {
 	console.log(event);
