@@ -152,6 +152,15 @@ functions:
               paths:
                 tagId: true
 
+  updateSensorData:
+    runtime: nodejs12.x
+    handler: lambdas/functions/updateSensorData.handler
+    events:
+      - http:
+          path: sensors
+          method: PATCH
+          cors: true
+
   getNotification:
     runtime: nodejs12.x
     handler: lambdas/functions/getNotification.handler

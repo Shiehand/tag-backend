@@ -36,7 +36,7 @@ export const handler = async (event) => {
 
 	const inputArr = [];
 	inputArr.push(
-		filteredBody.temperature,
+		filteredBody.heartRate,
 		filteredBody.accel_x,
 		filteredBody.accel_y,
 		filteredBody.accel_z

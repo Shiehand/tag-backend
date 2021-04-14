@@ -111,7 +111,7 @@ exports.handler = async (event) => {
 					};
 					await websocket.postToConnection(notifyParams).promise();
 				}
-				if (newItem.activity.S === "unusual") {
+				if (newItem.activity.S === "abnormal") {
 					let payload = {
 						header: "Unusual Activity",
 						time: Math.floor(Date.now() / 1000),
@@ -130,24 +130,24 @@ exports.handler = async (event) => {
 					await websocket.postToConnection(notifyParams).promise();
 				}
 
-				if (newItem.poach.S === "true") {
-					let payload = {
-						header: "Poaching Alert",
-						time: Math.floor(Date.now() / 1000),
-						tagId: newItem.tagId.S,
-						petName: petName,
-						username: username,
-					};
-					Dynamo.write(payload, process.env.notificationTable)
-						.then((res) => console.log(res))
-						.catch((err) => console.error(err));
-					payload.type = "notification";
-					let notifyParams = {
-						Data: Buffer.from(JSON.stringify(payload)),
-						ConnectionId: connection.connectionId,
-					};
-					await websocket.postToConnection(notifyParams).promise();
-				}
+				// if (newItem.poach.S === "true") {
+				// 	let payload = {
+				// 		header: "Poaching Alert",
+				// 		time: Math.floor(Date.now() / 1000),
+				// 		tagId: newItem.tagId.S,
+				// 		petName: petName,
+				// 		username: username,
+				// 	};
+				// 	Dynamo.write(payload, process.env.notificationTable)
+				// 		.then((res) => console.log(res))
+				// 		.catch((err) => console.error(err));
+				// 	payload.type = "notification";
+				// 	let notifyParams = {
+				// 		Data: Buffer.from(JSON.stringify(payload)),
+				// 		ConnectionId: connection.connectionId,
+				// 	};
+				// 	await websocket.postToConnection(notifyParams).promise();
+				// }
 				console.log("Post success at", connection.connectionId);
 			}
 		} catch (err) {
