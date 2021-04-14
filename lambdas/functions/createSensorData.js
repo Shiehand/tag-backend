@@ -21,7 +21,7 @@ export const handler = async (event) => {
 	}
 
 	if (!body.image) {
-		return Responses._400("missing image name");
+		return Responses._400({ message: "missing image name" });
 	}
 	const imageName = body.image;
 
