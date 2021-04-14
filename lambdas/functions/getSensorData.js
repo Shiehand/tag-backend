@@ -3,6 +3,11 @@
 const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 
+/**
+ * Lambda function to query sensor data
+ * tagId must be a path parameter
+ * t is an optional query string parameter to filter how old the query result that will be returned
+ */
 export async function handler(event) {
 	console.log(event);
 	if (!event.pathParameters || !event.pathParameters.tagId) {

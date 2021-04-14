@@ -3,6 +3,11 @@ import { ApiGatewayManagementApi } from "aws-sdk";
 import Dynamo from "../common/Dynamo";
 const pointInPolygon = require("point-in-polygon");
 
+/**
+ * Lambda function triggered by creation of new entry in the sensor data table
+ * Will send any new sensor data to the connections with the corresponding username
+ * Processes the sensor data and will send alerts to the connection if specific conditions are met
+ */
 exports.handler = async (event) => {
 	const records = event.Records.filter(
 		(record) => record.eventName === "INSERT"
@@ -91,7 +96,7 @@ exports.handler = async (event) => {
 					}
 				}
 
-				// Checking if there is anything to notify
+				// Temperature alert
 				if (newItem.temperature.N > 40) {
 					let payload = {
 						header: "Extreme Temperature",
@@ -111,6 +116,8 @@ exports.handler = async (event) => {
 					};
 					await websocket.postToConnection(notifyParams).promise();
 				}
+
+				// Activity alert
 				if (newItem.activity.S === "abnormal") {
 					let payload = {
 						header: "Unusual Activity",
@@ -130,24 +137,25 @@ exports.handler = async (event) => {
 					await websocket.postToConnection(notifyParams).promise();
 				}
 
-				// if (newItem.poach.S === "true") {
-				// 	let payload = {
-				// 		header: "Poaching Alert",
-				// 		time: Math.floor(Date.now() / 1000),
-				// 		tagId: newItem.tagId.S,
-				// 		petName: petName,
-				// 		username: username,
-				// 	};
-				// 	Dynamo.write(payload, process.env.notificationTable)
-				// 		.then((res) => console.log(res))
-				// 		.catch((err) => console.error(err));
-				// 	payload.type = "notification";
-				// 	let notifyParams = {
-				// 		Data: Buffer.from(JSON.stringify(payload)),
-				// 		ConnectionId: connection.connectionId,
-				// 	};
-				// 	await websocket.postToConnection(notifyParams).promise();
-				// }
+				// Poaching alert
+				if (newItem.poach.S === "true") {
+					let payload = {
+						header: "Poaching Alert",
+						time: Math.floor(Date.now() / 1000),
+						tagId: newItem.tagId.S,
+						petName: petName,
+						username: username,
+					};
+					Dynamo.write(payload, process.env.notificationTable)
+						.then((res) => console.log(res))
+						.catch((err) => console.error(err));
+					payload.type = "notification";
+					let notifyParams = {
+						Data: Buffer.from(JSON.stringify(payload)),
+						ConnectionId: connection.connectionId,
+					};
+					await websocket.postToConnection(notifyParams).promise();
+				}
 				console.log("Post success at", connection.connectionId);
 			}
 		} catch (err) {

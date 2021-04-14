@@ -1,6 +1,10 @@
 "use strict";
 const Dynamo = require("../common/Dynamo");
 
+/**
+ * Lambda function triggered by a successful registration of a new user
+ * This function will create a corresponding user entry in the user-tag table
+ */
 export async function handler(event) {
 	console.log(event);
 	const req = event.request;

@@ -7,6 +7,11 @@ s3 = boto3.client('s3')
 
 
 def handler(event, context):
+    """
+    Lambda function that will download and use the uploaded activity prediction model from the S3 bucket
+    Input must be 4 element array consisting of accelerometer values and heart rate
+    Returns the predicted activity based on the inputs
+    """
     print(event)
     body = event['body']
     temp_file_path = '/tmp/' + "behavior-model"

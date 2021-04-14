@@ -4,6 +4,11 @@ const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 const axios = require("axios").default;
 
+/**
+ * Lambda function to create a new entry on the sensor data table
+ * @param event.body needs to include all the sensor data attributes
+ * tagId needs to be a path parameter
+ */
 export const handler = async (event) => {
 	console.log(event);
 	const body = JSON.parse(event.body);

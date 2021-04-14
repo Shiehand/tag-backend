@@ -2,6 +2,11 @@
 const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 
+/**
+ * Lambda function to create a new animal/tag
+ * username should be a path parameter
+ * event.body should contain tagId and the rest of the attributes
+ */
 export async function handler(event) {
 	if (!event.pathParameters || !event.pathParameters.username) {
 		return Responses._400({ message: "missing path parameters" });

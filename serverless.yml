@@ -58,18 +58,6 @@ custom:
     packager: npm
     includeModules: false
     excludeFiles: lambdas/**/*.py
-  # pythonRequirements:
-  #   dockerizePip: non-linux
-  #   zip: true
-  #   slim: true
-  #   strip: false
-  # layer:
-  #   name: python-layer
-  #   compatibleRuntimes:
-  #     - python3.7
-  #   licenseInfo: GPLv3
-  #   allowedAccounts:
-  #     - "*"
 
 functions:
   getUserPet:
@@ -80,13 +68,6 @@ functions:
           path: users/{username}/tags/{tagId}
           method: GET
           cors: true
-          # authorizer:
-          #   name: CognitoAuth
-          #   type: COGNITO_USER_POOLS
-          #   arn:
-          #     Fn::GetAtt:
-          #       - CognitoUserPool
-          #       - Arn
 
   getUserPetAll:
     runtime: nodejs12.x
@@ -191,24 +172,6 @@ functions:
           path: pet-img
           method: POST
           cors: true
-
-  # predictActivity:
-  #   image: 362470762865.dkr.ecr.us-west-2.amazonaws.com/tensorsha256:8296993198c3f8ffed3ee44781052243e6f1b9f9523a3d85dd6e9e92d17e2b88
-  #   events:
-  #     - http:
-  #         path: predict
-  #         method: POST
-  #         cors: true
-
-  # predictImage:
-  #   runtime: python3.8
-  # image: 362470762865.dkr.ecr.us-west-2.amazonaws.com/tensorsha256:8296993198c3f8ffed3ee44781052243e6f1b9f9523a3d85dd6e9e92d17e2b88
-
-  #   events:
-  #     - http:
-  #         path: predict/image
-  #         method: POST
-  #         cors: true
 
   # Websocket functions
   onConnect:

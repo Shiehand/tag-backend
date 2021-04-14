@@ -5,6 +5,11 @@ import { v4 as uuid } from "uuid";
 import * as fileType from "file-type";
 const Responses = require("../common/API_Responses");
 
+/**
+ * Lambda function used to store an uploaded image from the web app to the S3 bucket
+ * body must contain username, petName and image
+ * body.image is a 64-bit encoded string of the image
+ */
 exports.handler = async (event) => {
 	console.log(event);
 

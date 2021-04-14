@@ -2,6 +2,12 @@
 const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 
+/**
+ * Lambda function used to update a sensor data entry on the table
+ * event.body must have tagId and readingId
+ * Attributes that are to be updated is included in event.body
+ * Any existing attributes not found in body will stay the same
+ */
 export async function handler(event) {
 	console.log("Event", JSON.stringify(event));
 

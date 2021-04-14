@@ -2,6 +2,12 @@
 const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 
+/**
+ * Lambda function used to update animal info on the table
+ * Username must be a path parameter
+ * tagId must be in the event.body alongside other attributes that are to be updated
+ * Any existing attributes not found in body will stay the same
+ */
 export async function handler(event) {
 	if (!event.pathParameters || !event.pathParameters.username) {
 		return Responses._400({ message: "missing path parameters" });

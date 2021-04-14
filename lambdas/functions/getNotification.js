@@ -3,6 +3,9 @@
 const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 
+/**
+ * Lambda function to query for notifications from the notifications history table
+ */
 exports.handler = async (event) => {
 	console.log("Event", event);
 	if (!event.pathParameters || !event.pathParameters.username) {

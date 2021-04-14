@@ -2,6 +2,11 @@
  * Based from https://github.com/SamWSoftware/ServerlessYoutubeSeries/tree/l45-debugging
  */
 const Responses = {
+	/**
+	 * Success response
+	 * @param {object} data data to be included in the body of the response
+	 * @returns the response object
+	 */
 	_200(data = {}) {
 		return {
 			headers: {
@@ -14,6 +19,11 @@ const Responses = {
 		};
 	},
 
+	/**
+	 * Error response
+	 * @param {object} data data to be included in the body of the response
+	 * @returns the response object
+	 */
 	_400(data = {}) {
 		return {
 			headers: {

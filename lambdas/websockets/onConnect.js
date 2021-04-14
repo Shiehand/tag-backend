@@ -2,6 +2,9 @@
 import Responses from "../common/API_Responses";
 import Dynamo from "../common/Dynamo";
 
+/**
+ * Lambda functions called when establishing new websocket connection
+ */
 exports.handler = async (event) => {
 	console.log("Event", event);
 

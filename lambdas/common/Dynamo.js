@@ -16,11 +16,11 @@ const config = {
 const ddb = new AWS.DynamoDB.DocumentClient(config);
 
 const Dynamo = {
-	/*
-	 * Function to get an item with Key from TableName
-	 * Params:
-	 *  Key: PK (or SK) of the item
-	 *  TableName: Name of the table the item is located
+	/**
+	 * Get an item with Key in TableName
+	 * @param {object} Key the key(s) of the item
+	 * @param {string} TableName name of the table the item is located
+	 * @returns the item if it exists
 	 */
 	async get(Key, TableName) {
 		const params = {
@@ -43,6 +43,12 @@ const Dynamo = {
 		return res.Item;
 	},
 
+	/**
+	 * Write a new item consisting of data to TableName
+	 * @param {object} data the item attributes
+	 * @param {string} TableName the name of table to be written into
+	 * @returns data if successful
+	 */
 	async write(data, TableName) {
 		const params = {
 			TableName,
@@ -60,6 +66,11 @@ const Dynamo = {
 		return data;
 	},
 
+	/**
+	 * Wrapper function for dynamodb query
+	 * @param {object} params the same params as dynamodbdocclient query
+	 * @returns the item(s) queried if successfull
+	 */
 	async query(params) {
 		if (!params.TableName) {
 			throw Error("No table name found");
@@ -75,6 +86,11 @@ const Dynamo = {
 		return res.Items;
 	},
 
+	/**
+	 * Deletes an item from a table
+	 * @param {object} key the key(s) of the item to be deleted
+	 * @param {string} tableName name of the table the item is located
+	 */
 	async delete(key, tableName) {
 		const params = {
 			Key: {
@@ -91,10 +107,14 @@ const Dynamo = {
 		}
 	},
 
-	// Taken from https://stackoverflow.com/a/63511693
 	/**
-	 * Based on https://stackoverflow.com/a/63511693
-	 * Put null to sortKey if there is no sort key
+	 * Update an item in a table
+	 * Some parts based from https://stackoverflow.com/a/63511693
+	 * @param {string} tableName name of the table
+	 * @param {object} item the updated item
+	 * @param {string} partitionKey name of the PK
+	 * @param {string} sortKey name of the SK
+	 * @returns {object} attributes that are updated
 	 */
 	async update(tableName, item, partitionKey, sortKey = null) {
 		var params = {

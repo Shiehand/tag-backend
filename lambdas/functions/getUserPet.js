@@ -3,6 +3,10 @@
 const Responses = require("../common/API_Responses");
 const Dynamo = require("../common/Dynamo");
 
+/**
+ * Lambda function to get an animal entry from the table
+ * username and tagId must be a path parameter
+ */
 export async function handler(event) {
 	console.log(event);
 
